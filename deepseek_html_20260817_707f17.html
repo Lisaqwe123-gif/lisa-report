@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作汇报 · 交互展示</title>
+    <!-- 使用 Font Awesome 图标库，提升视觉细节 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .report-container {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.25);
+            padding: 2rem 2rem 2.8rem;
+            transition: all 0.2s ease;
+        }
+
+        /* 头部 */
+        .report-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.2rem;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 1.2rem;
+        }
+
+        .report-header h1 {
+            font-size: 2.1rem;
+            font-weight: 600;
+            color: #0a2540;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .report-header h1 i {
+            color: #2a7de1;
+            font-size: 2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .header-actions button {
+            background: white;
+            border: 1px solid #d0dae8;
+            border-radius: 60px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            color: #1a3350;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .header-actions button i {
+            font-size: 1rem;
+            color: #2a7de1;
+        }
+
+        .header-actions button:hover {
+            background: #e9eff8;
+            border-color: #2a7de1;
+            box-shadow: 0 2px 6px rgba(42, 125, 225, 0.15);
+        }
+
+        /* 上传卡片 (全局) */
+        .upload-zone {
+            background: #f8faff;
+            border: 2px dashed #b6cbe5;
+            border-radius: 24px;
+            padding: 2rem 1.8rem;
+            margin-bottom: 2.5rem;
+            transition: background 0.15s, border-color 0.15s;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .upload-zone:hover {
+            background: #f1f7ff;
+            border-color: #2a7de1;
+        }
+
+        .upload-zone .upload-prompt {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-prompt i {
+            font-size: 2.2rem;
+            color: #2a7de1;
+            background: rgba(42, 125, 225, 0.08);
+            padding: 0.6rem;
+            border-radius: 60px;
+        }
+
+        .upload-prompt span {
+            font-weight: 500;
+            color: #1f3b5c;
+            font-size: 1rem;
+        }
+
+        .upload-prompt small {
+            color: #5c7392;
+            font-weight: 400;
+            margin-left: 0.3rem;
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-buttons label {
+            background: white;
+            border: 1px solid #c8d6e8;
+            border-radius: 60px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            color: #1f3b5c;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .upload-buttons label i {
+            color: #2a7de1;
+        }
+
+        .upload-buttons label:hover {
+            background: #e9eff8;
+            border-color: #2a7de1;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* 已上传文件列表 (轻量展示) */
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.2rem;
+            margin-top: 1rem;
+            padding: 0.5rem 0.2rem;
+            align-items: center;
+        }
+
+        .file-item {
+            background: #edf3fa;
+            border-radius: 40px;
+            padding: 0.3rem 1rem 0.3rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #0a2540;
+            border: 1px solid #d4e0f0;
+        }
+
+        .file-item i {
+            color: #2a7de1;
+        }
+
+        .file-item .remove-file {
+            background: transparent;
+            border: none;
+            color: #7a8aa0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0 0.2rem;
+            transition: color 0.15s;
+        }
+
+        .file-item .remove-file:hover {
+            color: #c7453a;
+        }
+
+        /* 汇报主体 —— 卡片式分区 */
+        .report-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.4rem 1.8rem 1.8rem;
+            box-shadow: 0 4px 12px rgba(0, 20, 40, 0.04);
+            border: 1px solid #e9eef6;
+            transition: 0.15s;
+        }
+
+        .section-card:hover {
+            border-color: #cddef5;
+            box-shadow: 0 8px 18px rgba(0, 30, 60, 0.06);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0a2540;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-title i {
+            color: #2a7de1;
+            font-size: 1.3rem;
+            width: 1.8rem;
+        }
+
+        .section-content {
+            color: #1f3b5c;
+            line-height: 1.6;
+            font-size: 0.98rem;
+            padding-left: 0.2rem;
+        }
+
+        .section-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .section-content ul {
+            padding-left: 1.4rem;
+            margin: 0.5rem 0;
+        }
+
+        .section-content ul li {
+            margin-bottom: 0.2rem;
+        }
+
+        .badge {
+            background: #e3ecf9;
+            border-radius: 60px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1d4d7c;
+            letter-spacing: 0.3px;
+        }
+
+        /* 图片展示区 (来自上传) */
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .image-preview {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #dce4ef;
+            background: #f2f6fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-preview .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(2px);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.15s;
+        }
+
+        .image-preview .remove-img:hover {
+            background: #c7453a;
+        }
+
+        .empty-image-hint {
+            color: #889bb3;
+            font-size: 0.9rem;
+            padding: 0.2rem 0;
+        }
+
+        /* 辅助 */
+        .text-muted {
+            color: #5f7a9a;
+            font-weight: 400;
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+
+        /* 响应式 */
+        @media (max-width: 680px) {
+            .report-container {
+                padding: 1.5rem 1rem;
+            }
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            .upload-zone {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.2rem;
+            }
+            .upload-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .section-card {
+                padding: 1.2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="report-container" id="app">
+
+    <!-- 头部：标题 + 操作 -->
+    <div class="report-header">
+        <h1>
+            <i class="fas fa-chart-pie"></i> 工作汇报
+        </h1>
+        <div class="header-actions">
+            <button onclick="alert('演示交互：可导出为PDF或打印')">
+                <i class="fas fa-print"></i> 打印
+            </button>
+            <button onclick="alert('演示交互：下载汇报内容 (模拟)')">
+                <i class="fas fa-download"></i> 导出
+            </button>
+        </div>
+    </div>
+
+    <!-- 全局上传区域（文件 + 图片） -->
+    <div class="upload-zone">
+        <div class="upload-prompt">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>上传文件或图片 <small>（支持 .pdf, .docx, .png, .jpg 等）</small></span>
+        </div>
+        <div class="upload-buttons">
+            <label for="fileUpload">
+                <i class="fas fa-file"></i> 选择文件
+            </label>
+            <label for="imageUpload">
+                <i class="fas fa-image"></i> 选择图片
+            </label>
+        </div>
+        <!-- 隐藏input -->
+        <input type="file" id="fileUpload" multiple accept=".pdf,.docx,.doc,.txt,.xlsx,.pptx,.zip">
+        <input type="file" id="imageUpload" multiple accept="image/*">
+    </div>
+
+    <!-- 显示已上传文件列表 & 图片预览 -->
+    <div id="fileListContainer" class="file-list"></div>
+    <div id="imageGridContainer" class="image-grid"></div>
+
+    <!-- 汇报主体：多个部分 (卡片) -->
+    <div class="report-sections">
+
+        <!-- 第一部分：工作概述 -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-bullseye"></i> 工作概述
+                <span class="badge">Q3 进展</span>
+            </div>
+            <div class="section-content">
+                <p><strong>核心目标：</strong> 提升产品迭代效率，优化用户体验，并完成季度关键指标。</p>
+                <ul>
+                    <li><i class="fas fa-check-circle" style="color:#2a7de1; margin-right: 6px;"></i> 完成 12 个功能模块升级</li>
+                    <li><i class="fas fa-check-circle" style="color:#2a7de1; margin-right: 6px;"></i> 用户满意度 NPS 提升 8%</li>
+                    <li><i class="fas fa-spinner" style="color:#f1b24a; margin-right: 6px;"></i> 数据中台迁移进行中 (80%)</li>
+                </ul>
+                <p style="margin-top: 0.3rem;">详细数据见下方项目进展。</p>
+            </div>
+        </div>
+
+        <!-- 第二部分：项目进展 (可展示图片占位) -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-project-diagram"></i> 项目进展
+                <span class="badge">4 个进行中</span>
+            </div>
+            <div class="section-content">
+                <p><strong>🔹 智能分析平台</strong> — 已完成原型验证，预计下月上线测试环境。</p>
+                <p><strong>🔹 移动端改版</strong> — 设计稿定稿，开发进度 45%。</p>
+                <p><strong>🔹 数据治理</strong> — 清洗 80% 历史数据，新管道搭建中。</p>
+                <p><strong>🔹 客户成功体系</strong> — 已输出 SOP 文档，培训进行中。</p>
+                <!-- 这里可以放图片，如果有上传图片会显示在下面，同时我们也可以加一个示意 -->
+                <div class="image-grid" style="margin-top: 12px;" id="projectImageGrid">
+                    <!-- 占位风格：如果没图片显示一行提示 -->
+                    <span class="empty-image-hint" id="projectImageHint"><i class="fas fa-upload" style="margin-right: 6px;"></i> 上传图片可在此展示</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三部分：问题与风险 -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-exclamation-triangle" style="color:#d97747;"></i> 问题与风险
+            </div>
+            <div class="section-content">
+                <ul>
+                    <li><span style="background:#fee9e7; padding:0.1rem 0.6rem; border-radius:30px; color:#b34033;">高</span> 前端资源瓶颈，需协调外部支持。</li>
+                    <li><span style="background:#fff0db; padding:0.1rem 0.6rem; border-radius:30px; color:#a8682a;">中</span> 数据迁移可能导致接口延迟，已制定回滚方案。</li>
+                    <li><span style="background:#e7edf5; padding:0.1rem 0.6rem; border-radius:30px; color:#3c5e7e;">低</span> 文档同步滞后，下周安排集中补全。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 第四部分：下一步计划 -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-calendar-plus"></i> 下一步计划
+            </div>
+            <div class="section-content">
+                <ul>
+                    <li><i class="far fa-circle" style="color:#2a7de1; margin-right: 8px;"></i> 完成智能分析平台 MVP 并启动内部测试</li>
+                    <li><i class="far fa-circle" style="color:#2a7de1; margin-right: 8px;"></i> 组织 2 场用户反馈会，收集改进点</li>
+                    <li><i class="far fa-circle" style="color:#2a7de1; margin-right: 8px;"></i> 更新技术文档与操作手册</li>
+                    <li><i class="far fa-circle" style="color:#2a7de1; margin-right: 8px;"></i> 准备季度汇报材料 (PPT/数据看板)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 第五部分：附件与备注 (展示上传的文件) -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-paperclip"></i> 附件 & 备注
+                <span class="badge" id="fileCountBadge">0 个文件</span>
+            </div>
+            <div class="section-content">
+                <p>上传的文件将出现在此处，图片会集中展示在“项目进展”区域。</p>
+                <div id="fileAttachmentList" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 12px;">
+                    <span class="text-muted" style="font-size:0.9rem;"><i class="fas fa-info-circle"></i> 暂无附件</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // DOM 元素
+        const fileInput = document.getElementById('fileUpload');
+        const imageInput = document.getElementById('imageUpload');
+        const fileListContainer = document.getElementById('fileListContainer');
+        const imageGridContainer = document.getElementById('imageGridContainer');
+        const fileAttachmentList = document.getElementById('fileAttachmentList');
+        const fileCountBadge = document.getElementById('fileCountBadge');
+        const projectImageHint = document.getElementById('projectImageHint');
+        const projectImageGrid = document.getElementById('projectImageGrid');
+
+        // 存储文件与图片 (用于展示)
+        let uploadedFiles = [];      // 存储 { name, size, type, url? } 文件对象
+        let uploadedImages = [];     // 存储 { name, url, file }
+
+        // 更新所有UI
+        function refreshUI() {
+            // 更新文件列表 (顶部)
+            renderFileList();
+            // 更新附件列表 (底部)
+            renderAttachmentList();
+            // 更新图片网格 (项目进展区域)
+            renderImageGrid();
+            // 更新徽章
+            updateBadge();
+        }
+
+        // 渲染顶部文件列表
+        function renderFileList() {
+            fileListContainer.innerHTML = '';
+            if (uploadedFiles.length === 0) {
+                fileListContainer.innerHTML = `<span class="text-muted" style="font-size:0.9rem;"><i class="fas fa-file-alt"></i> 暂无上传文件</span>`;
+                return;
+            }
+            uploadedFiles.forEach((file, index) => {
+                const item = document.createElement('span');
+                item.className = 'file-item';
+                const icon = getFileIcon(file.type || file.name);
+                item.innerHTML = `
+                    <i class="${icon}"></i> ${file.name}
+                    <span style="opacity:0.6; font-size:0.7rem;">(${(file.size/1024).toFixed(1)} KB)</span>
+                    <button class="remove-file" data-index="${index}" data-type="file"><i class="fas fa-times"></i></button>
+                `;
+                fileListContainer.appendChild(item);
+            });
+            // 绑定删除事件
+            document.querySelectorAll('.file-item .remove-file[data-type="file"]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const index = parseInt(this.dataset.index, 10);
+                    if (!isNaN(index) && index >= 0 && index < uploadedFiles.length) {
+                        // 释放对象URL
+                        if (uploadedFiles[index].url) {
+                            URL.revokeObjectURL(uploadedFiles[index].url);
+                        }
+                        uploadedFiles.splice(index, 1);
+                        refreshUI();
+                    }
+                });
+            });
+        }
+
+        // 渲染附件列表 (底部)
+        function renderAttachmentList() {
+            fileAttachmentList.innerHTML = '';
+            if (uploadedFiles.length === 0) {
+                fileAttachmentList.innerHTML = `<span class="text-muted" style="font-size:0.9rem;"><i class="fas fa-info-circle"></i> 暂无附件</span>`;
+                return;
+            }
+            uploadedFiles.forEach((file, idx) => {
+                const span = document.createElement('span');
+                span.style.cssText = 'background:#f0f5fe; border-radius:30px; padding:0.2rem 1rem 0.2rem 1.2rem; display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem;';
+                const icon = getFileIcon(file.type || file.name);
+                span.innerHTML = `<i class="${icon}"></i> ${file.name}`;
+                fileAttachmentList.appendChild(span);
+            });
+        }
+
+        // 渲染图片网格 (项目进展区域)
+        function renderImageGrid() {
+            // 清空网格，但保留 hint 占位
+            projectImageGrid.innerHTML = '';
+            if (uploadedImages.length === 0) {
+                // 显示占位提示
+                const hint = document.createElement('span');
+                hint.className = 'empty-image-hint';
+                hint.id = 'projectImageHint';
+                hint.innerHTML = `<i class="fas fa-upload" style="margin-right: 6px;"></i> 上传图片可在此展示`;
+                projectImageGrid.appendChild(hint);
+                return;
+            }
+
+            uploadedImages.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-preview';
+                div.innerHTML = `
+                    <img src="${img.url}" alt="${img.name}">
+                    <button class="remove-img" data-index="${index}" data-type="image"><i class="fas fa-times"></i></button>
+                `;
+                projectImageGrid.appendChild(div);
+            });
+
+            // 绑定删除图片事件
+            document.querySelectorAll('.image-preview .remove-img[data-type="image"]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const index = parseInt(this.dataset.index, 10);
+                    if (!isNaN(index) && index >= 0 && index < uploadedImages.length) {
+                        // 释放URL
+                        if (uploadedImages[index].url) {
+                            URL.revokeObjectURL(uploadedImages[index].url);
+                        }
+                        uploadedImages.splice(index, 1);
+                        refreshUI();
+                    }
+                });
+            });
+        }
+
+        // 更新徽章
+        function updateBadge() {
+            const total = uploadedFiles.length + uploadedImages.length;
+            fileCountBadge.textContent = total + ' 个文件';
+        }
+
+        // 辅助: 根据文件名/类型获取图标
+        function getFileIcon(typeOrName) {
+            const name = typeOrName.toLowerCase();
+            if (name.includes('pdf')) return 'fas fa-file-pdf';
+            if (name.includes('doc') || name.includes('word')) return 'fas fa-file-word';
+            if (name.includes('xls') || name.includes('sheet')) return 'fas fa-file-excel';
+            if (name.includes('ppt') || name.includes('presentation')) return 'fas fa-file-powerpoint';
+            if (name.includes('zip') || name.includes('rar') || name.includes('7z')) return 'fas fa-file-archive';
+            if (name.includes('txt')) return 'fas fa-file-alt';
+            if (name.includes('png') || name.includes('jpg') || name.includes('jpeg') || name.includes('gif') || name.includes('webp')) return 'fas fa-file-image';
+            return 'fas fa-file';
+        }
+
+        // ----- 处理文件上传 (非图片) -----
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(this.files);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                // 过滤掉图片类型（让图片input专门处理）
+                if (file.type && file.type.startsWith('image/')) {
+                    // 如果有图片混在文件里，可以提示或者忽略，这里我们自动转给图片处理
+                    handleImageFile(file);
+                    return;
+                }
+                // 避免重复添加同名文件 (简单去重)
+                const exists = uploadedFiles.some(f => f.name === file.name && f.size === file.size);
+                if (exists) return;
+
+                // 创建对象URL (非图片)
+                const url = URL.createObjectURL(file);
+                uploadedFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    url: url,
+                });
+            });
+
+            // 清空input，允许重复上传同一文件
+            this.value = '';
+            refreshUI();
+        });
+
+        // ----- 处理图片上传 (图片input) -----
+        imageInput.addEventListener('change', function(e) {
+            const files = Array.from(this.files);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                if (file.type && file.type.startsWith('image/')) {
+                    handleImageFile(file);
+                } else {
+                    // 如果不是图片，可以提示或者当作文件处理
+                    const exists = uploadedFiles.some(f => f.name === file.name && f.size === file.size);
+                    if (!exists) {
+                        const url = URL.createObjectURL(file);
+                        uploadedFiles.push({
+                            name: file.name,
+                            size: file.size,
+                            type: file.type || 'application/octet-stream',
+                            url: url,
+                        });
+                    }
+                }
+            });
+            this.value = '';
+            refreshUI();
+        });
+
+        // 辅助处理单个图片文件
+        function handleImageFile(file) {
+            // 去重
+            const exists = uploadedImages.some(img => img.name === file.name && img.size === file.size);
+            if (exists) return;
+            const url = URL.createObjectURL(file);
+            uploadedImages.push({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                url: url,
+            });
+        }
+
+        // 额外：如果文件input里包含了图片，也可以处理，已在上面的fileInput里调用handleImageFile
+
+        // 初始化占位
+        refreshUI();
+
+        // 注意：页面上的演示图片可以通过上传增加，无默认图片。
+        console.log('汇报交互已启动，可上传文件与图片。');
+    })();
+</script>
+
+</body>
+</html>
